@@ -1,1 +1,2 @@
+react 및 패키지 설치완료.
 Pull 이후 폴더 이동해서 yarn install -> yarn start
