@@ -3,16 +3,16 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Routes, Route, Router} from "react-router-dom";
 import Register from "./Book/Register";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/Book/Register" element={<Register />} />
+        <Route path="/book/register" element={<Register />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
