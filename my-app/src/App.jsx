@@ -1,18 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Register from "./Book/Register";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import BookList from './Book/BookList';
+import Details from './Book/Details';
+import Register from './Book/Register';
+// 필요하면 import './App.css'; 도 추가
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/Book/Register" element={<Register />} />
+        <Route path="/" element={<Navigate to="/book" />} />
+        <Route path="/book" element={<BookList />} />
+        <Route path="/book/list" element={<BookList />} />
+        <Route path="/book/details" element={<Details />} />
+        <Route path="/book/register" element={<Register />} />
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 
