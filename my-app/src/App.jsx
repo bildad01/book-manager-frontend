@@ -1,17 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Button } from '@mui/material';
+//import './App.css'
+import { Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import BookList from './BookList';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <Button variant="contained">버튼입니다</Button>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<Navigate to="/book" />} />
+        <Route path="/book" element={<BookList />} />
+        <Route path="/book/list" element={<BookList />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

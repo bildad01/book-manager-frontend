@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+.book-list-wrapper {
+  width: 100%;
+  max-width: 100%;
+  padding: 20px;
+  background-color: aquamarine;
+  box-sizing: border-box; /* 패딩, 마진도 포함해서 크기 계산 */
+}
+
+.book-list-header {
+  display: flex;
+  justify-content: space-between; /* 왼쪽, 오른쪽 끝 배치 */
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.book-list-header h1 {
+  margin: 0;
+}
+
+.book-cover {
+  width: 180px;
+  height: 200px;
+  overflow: hidden;
+  border: 1px solid #6e6e6e;  /* 얇은 회색 테두리 */
+  border-radius: 10px;
+}
+
+/* 필요하면 padding/margin으로 간격 조절 */
+.book-list-header h1,
+.book-list-header .btn-add {
+  padding: 0 20px;
+  line-height: 40px; /* 수직 가운데 정렬 */
+}
+.btn-add {
+    border: 1px solid #6e6e6e;
+}
