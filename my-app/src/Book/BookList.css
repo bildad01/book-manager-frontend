@@ -1,8 +1,8 @@
 .book-list-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  min-height: 100vh; /* 화면 전체 높이 유지 */
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+  padding: 20px;
   font-family: 'Segoe UI', sans-serif;
 }
 
@@ -33,7 +33,7 @@
 
 .book-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
 }
 
