@@ -1,9 +1,8 @@
-//import './App.css'
-import { Navigate } from 'react-router-dom';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import BookList from './Book/BookList';
 import Details from './Book/Details';
 import Register from './Book/Register';
+// 필요하면 import './App.css'; 도 추가
 
 function App() {
   return (
