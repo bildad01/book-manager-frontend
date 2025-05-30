@@ -1,0 +1,108 @@
+.book-list-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  min-height: 100vh; /* 화면 전체 높이 유지 */
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.book-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  line-height: 40px; /* 수직 가운데 정렬 */
+  margin-bottom: 2rem;
+}
+
+.book-list-header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.btn-add {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #6e6e6e;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+  line-height: normal;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.book-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+}
+
+.book-cover {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  border: 1px solid #6e6e6e;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.book-info p {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.book-actions {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn.update {
+  background-color: #2196F3;
+  color: white;
+}
+
+.btn.update:hover {
+  background-color: #1976D2;
+}
+
+.btn.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.btn.delete:hover {
+  background-color: #d32f2f;
+}
