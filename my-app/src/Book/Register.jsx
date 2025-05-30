@@ -100,11 +100,29 @@ export default function Register() {
   };
 
   return (
-    <Box maxWidth={700} mx="auto" mt={5}>
-      <Typography variant="h5" mb={2}>도서 등록</Typography>
+    <Box
+      maxWidth={700}
+      width="100%"
+      mx="auto"
+      mt={5}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
+      }}
+    >
+      <Typography variant="h5" mb={2} textAlign="center">
+        도서 등록
+      </Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
-      <Box display="flex" gap={4}>
+      <Box
+        display="flex"
+        gap={4}
+        justifyContent="center"
+        width="100%"
+        alignItems="flex-start"
+      >
         {/* 표지 미리보기 */}
         <Paper
           sx={{
@@ -116,23 +134,24 @@ export default function Register() {
             mb: 2,
             background: "#f5f5f5",
             position: "relative",
+            overflow: "hidden"
           }}
         >
           {loading ? (
             <CircularProgress />
           ) : coverImageUrl ? (
             <img
-                src={coverImageUrl}
-                alt="표지"
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "contain", // 또는 "cover" (취향에 따라)
-                    background: "#f5f5f5",
-                    display: "block",
-                }}
-                />
-            ) : (
+              src={coverImageUrl}
+              alt="표지"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                background: "#f5f5f5",
+                display: "block",
+              }}
+            />
+          ) : (
             <Typography color="textSecondary">표지 미리보기</Typography>
           )}
         </Paper>
@@ -180,4 +199,3 @@ export default function Register() {
     </Box>
   );
 }
-
