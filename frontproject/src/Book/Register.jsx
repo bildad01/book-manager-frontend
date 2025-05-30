@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Button, Typography, CircularProgress, Alert } from "@mui/material";
-import { RegisterContainer, PreviewPaper, FormBox, StyledTextField } from "./Register.styles";
+import { Box, TextField, Button, Typography, Paper, CircularProgress, Alert } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  dangerouslyAllowBrowser: true
+});
 
 export default function Register() {
   const [title, setTitle] = useState("");
@@ -21,14 +26,36 @@ export default function Register() {
     }
     setError("");
     setLoading(true);
+
     try {
-      const res = await axios.post("/api/v1/books/generate-cover", { title, content });
-      if (res.data.status === "success") {
-        setCoverImageUrl(res.data.data.coverImageUrl);
-        setSuccess("AI 표지 이미지 생성 성공!");
-      } else {
-        setError(res.data.message || "AI 표지 이미지 생성 실패");
-      }
+      // 1. GPT에게 70자 이내 요약 요청
+      const summaryPrompt = `
+        아래 책 내용을 70자 이내로 요약해줘.
+        제목: ${title}
+        내용: ${content}
+        `;
+      const summaryRes = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [{ role: "user", content: summaryPrompt }],
+      });
+      const summary = summaryRes.choices[0].message.content.trim();
+
+      // 2. DALL·E 이미지 생성 프롬프트
+      const imagePrompt = `
+        "${title}"라는 제목을 표지 상단에 넣고,
+        아래 요약에 어울리는 배경을 가진 180x260 사이즈의 책 표지 이미지를 만들어줘.
+        요약: ${summary}
+        `;
+
+      // 3. DALL·E로 이미지 생성
+      const imageRes = await openai.images.generate({
+        model: "dall-e-3",
+        prompt: imagePrompt,
+        n: 1,
+        size: "1024x1024", // DALL·E 지원 사이즈 중 가장 비슷한 값
+      });
+      setCoverImageUrl(imageRes.data[0].url);
+      setSuccess("AI 표지 이미지 생성 성공!");
     } catch (e) {
       setError("AI 표지 이미지 생성 실패");
     }
@@ -43,54 +70,73 @@ export default function Register() {
       setError("제목과 내용을 입력하세요.");
       return;
     }
-    console.log({
+    // 콘솔에 값 출력
+    console.log("등록 데이터:", {
         title,
         content,
         coverImageUrl
     });
     try {
-    // coverImageUrl이 비어 있으면 payload에서 제외
-    const payload = {
-      title,
-      content,
-      //coverImageUrl
-    };
-    if (coverImageUrl && coverImageUrl.trim() !== "") {
-      payload.coverImageUrl = coverImageUrl;
+      // coverImageUrl이 비어 있으면 payload에서 제외
+      const payload = { title, content };
+      if (coverImageUrl && coverImageUrl.trim() !== "") {
+        payload.coverImageUrl = coverImageUrl;
+      }
+      const res = await axios.post("/api/v1/books", payload);
+      if (res.data.status === "success") {
+        setSuccess("도서 등록 성공!");
+        setTimeout(() => navigate("/books"), 1000); // 1초 후 목록으로 이동
+      } else {
+        setError(res.data.message || "도서 등록 실패");
+      }
+    } catch (e) {
+      if (e.response && e.response.data && e.response.data.message) {
+        setError(e.response.data.message);
+      } else {
+        setError("도서 등록 실패");
+      }
     }
-    const res = await axios.post("/api/v1/books", payload);
-    if (res.data.status === "success") {
-      setSuccess("도서 등록 성공!");
-      setTimeout(() => navigate("/books"), 1000); // 1초 후 목록으로 이동
-    } else {
-      setError(res.data.message || "도서 등록 실패");
-    }
-  } catch (e) {
-    if (e.response && e.response.data && e.response.data.message) {
-      setError(e.response.data.message);
-    } else {
-      setError("도서 등록 실패");
-    }
-  }
   };
 
   return (
-    <RegisterContainer>
+    <Box maxWidth={700} mx="auto" mt={5}>
       <Typography variant="h5" mb={2}>도서 등록</Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
       <Box display="flex" gap={4}>
-        <PreviewPaper>
+        {/* 표지 미리보기 */}
+        <Paper
+          sx={{
+            width: 180,
+            height: 260,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mb: 2,
+            background: "#f5f5f5",
+            position: "relative",
+          }}
+        >
           {loading ? (
             <CircularProgress />
           ) : coverImageUrl ? (
-            <img src={coverImageUrl} alt="표지" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          ) : (
+            <img
+                src={coverImageUrl}
+                alt="표지"
+                style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain", // 또는 "cover" (취향에 따라)
+                    background: "#f5f5f5",
+                    display: "block",
+                }}
+                />
+            ) : (
             <Typography color="textSecondary">표지 미리보기</Typography>
           )}
-        </PreviewPaper>
-        <FormBox>
-          <StyledTextField
+        </Paper>
+        <Box flex={1}>
+          <TextField
             label="제목"
             fullWidth
             value={title}
@@ -98,8 +144,9 @@ export default function Register() {
             inputProps={{ maxLength: 20 }}
             helperText={`${title.length}/20`}
             required
+            sx={{ mb: 2 }}
           />
-          <StyledTextField
+          <TextField
             label="내용"
             fullWidth
             multiline
@@ -109,6 +156,7 @@ export default function Register() {
             inputProps={{ maxLength: 500 }}
             helperText={`${content.length}/500`}
             required
+            sx={{ mb: 2 }}
           />
           <Box display="flex" gap={2}>
             <Button
@@ -126,8 +174,8 @@ export default function Register() {
               등록
             </Button>
           </Box>
-        </FormBox>
+        </Box>
       </Box>
-    </RegisterContainer>
+    </Box>
   );
 }

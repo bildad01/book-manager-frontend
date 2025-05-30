@@ -10,7 +10,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/books/register" element={<Register />} />
+        <Route path="/Book/Register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );
