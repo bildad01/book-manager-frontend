@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Paper, CircularProgress } from "@mui/material";
+import { Button, Typography, CircularProgress, Alert } from "@mui/material";
+import { RegisterContainer, PreviewPaper, FormBox, StyledTextField } from "./Register.styles";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -42,42 +43,44 @@ export default function Register() {
       setError("제목과 내용을 입력하세요.");
       return;
     }
+    console.log({
+        title,
+        content,
+        coverImageUrl
+    });
     try {
-      const res = await axios.post("/api/v1/books", { title, content, coverImageUrl });
-      if (res.data.status === "success") {
-        setSuccess("도서 등록 성공!");
-        setTimeout(() => navigate("/books"), 1000); // 1초 후 목록으로 이동
-      } else {
-        setError(res.data.message || "도서 등록 실패");
-      }
-    } catch (e) {
-      if (e.response && e.response.data && e.response.data.message) {
-        setError(e.response.data.message);
-      } else {
-        setError("도서 등록 실패");
-      }
+    // coverImageUrl이 비어 있으면 payload에서 제외
+    const payload = {
+      title,
+      content,
+      //coverImageUrl
+    };
+    if (coverImageUrl && coverImageUrl.trim() !== "") {
+      payload.coverImageUrl = coverImageUrl;
     }
+    const res = await axios.post("/api/v1/books", payload);
+    if (res.data.status === "success") {
+      setSuccess("도서 등록 성공!");
+      setTimeout(() => navigate("/books"), 1000); // 1초 후 목록으로 이동
+    } else {
+      setError(res.data.message || "도서 등록 실패");
+    }
+  } catch (e) {
+    if (e.response && e.response.data && e.response.data.message) {
+      setError(e.response.data.message);
+    } else {
+      setError("도서 등록 실패");
+    }
+  }
   };
 
   return (
-    <Box maxWidth={700} mx="auto" mt={5}>
+    <RegisterContainer>
       <Typography variant="h5" mb={2}>도서 등록</Typography>
       {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
       {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
       <Box display="flex" gap={4}>
-        {/* 표지 미리보기 */}
-        <Paper
-          sx={{
-            width: 180,
-            height: 260,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mb: 2,
-            background: "#f5f5f5",
-            position: "relative",
-          }}
-        >
+        <PreviewPaper>
           {loading ? (
             <CircularProgress />
           ) : coverImageUrl ? (
@@ -85,19 +88,18 @@ export default function Register() {
           ) : (
             <Typography color="textSecondary">표지 미리보기</Typography>
           )}
-        </Paper>
-        <Box flex={1}>
-          <TextField
+        </PreviewPaper>
+        <FormBox>
+          <StyledTextField
             label="제목"
             fullWidth
             value={title}
             onChange={e => setTitle(e.target.value)}
-            inputProps={{ maxLength: 30 }}
-            helperText={`${title.length}/30`}
+            inputProps={{ maxLength: 20 }}
+            helperText={`${title.length}/20`}
             required
-            sx={{ mb: 2 }}
           />
-          <TextField
+          <StyledTextField
             label="내용"
             fullWidth
             multiline
@@ -107,7 +109,6 @@ export default function Register() {
             inputProps={{ maxLength: 500 }}
             helperText={`${content.length}/500`}
             required
-            sx={{ mb: 2 }}
           />
           <Box display="flex" gap={2}>
             <Button
@@ -125,8 +126,8 @@ export default function Register() {
               등록
             </Button>
           </Box>
-        </Box>
+        </FormBox>
       </Box>
-    </Box>
+    </RegisterContainer>
   );
 }

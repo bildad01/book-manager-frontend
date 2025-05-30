@@ -10,8 +10,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/Book/Register" element={<Register />} />
-        {/* 다른 Route도 추가 */}
+        <Route path="/books/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   );
