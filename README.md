@@ -2,6 +2,25 @@
 -----
 담당자 : 김민지, 나기현, 이승준, 정한이
 
+## 주요 기능
+- 도서 목록 : 전체 도서 조회
+- 도서 상세 : 도서 상세, 수정, 삭제 기능
+- AI 이미지 생성: DALL·E API를 이용하여 도서 표지 이미지 생성
+- 디자인 : Material UI 적용
+
+## 기술 스택
+ 
+| 종류 | 기술 |
+|------|------|
+| 프레임워크 | React + Vite |
+| 디자인 | MUI (Material UI) |
+| 라우팅 | React Router v6 |
+| HTTP 통신 | Axios |
+| 백엔드 통신 | Spring Boot|
+| AI | OpenAI API (DALL·E) | 
+
+---
+ 
 ## 페이지 상세 정보
 ### 도서 목록 (BookList.jsx)
 - /book
