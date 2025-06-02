@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import OpenAI from "openai";
 import Layout from "../components/Layout";
+import { registerBook } from '../api';
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -61,6 +62,7 @@ export default function Register() {
     setLoading(false);
   };
 
+  // 도서 등록 함수
   const handleRegister = async () => {
     setError("");
     setSuccess("");
@@ -77,13 +79,8 @@ export default function Register() {
         payload.coverImageUrl = coverImageUrl;
       }
 
-      const res = await axios.post("/api/v1/books", payload);
-      if (res.data.status === "success") {
-        setSuccess("도서 등록 성공!");
-        setTimeout(() => navigate("/books"), 1000);
-      } else {
-        setError(res.data.message || "도서 등록 실패");
-      }
+      const res = await registerBook(payload);
+      console.log(res)
     } catch (e) {
       setError(
         e.response?.data?.message || "도서 등록 실패"

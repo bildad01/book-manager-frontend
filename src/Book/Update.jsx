@@ -1,35 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, Container, CircularProgress, Alert } from '@mui/material';
 import Layout from '../components/Layout';
+import { api, fetchBookDetail } from '../api';
 
 export default function Update() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const book = {
-    bookid: id,
-    title: `도서 제목 예시 (ID: ${id})`,
-    author: '홍길동',
-    content:
-      '이곳에 도서의 상세 내용을 표시합니다. 수정 가능한 텍스트 박스로 대체되었습니다.',
-  };
-
+  const [book, setBook] = useState(null);
   const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setContent(book.content);
-  }, [book.content]);
+    const loadBook = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await fetchBookDetail(id);
+        setBook(res);
+        setContent(res.content);
+      } catch (e) {
+        setError('도서 정보 불러오기 실패');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBook();
+  }, [id]);
 
-  const handleSave = () => {
-    console.log('Updated content:', content);
-    navigate(`/books/details/${id}`);
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      const response = await api.put(`/api/v1/books/${id}`, {
+        content: content,
+        title: book.title,
+        author: book.author,
+      });
+      if (response.data.status === 'success') {
+        alert('수정 완료!!');
+        navigate(`/book/details/${id}`);
+      } else {
+        alert('수정 실패: ' + response.data.message);
+      }
+    } catch (e) {
+      alert('서버 연결 실패: ' + (e.response?.data?.message || e.message));
+    } finally {
+      setLoading(false);
+    }
   };
-  const handleDelete = () => {
-  if (window.confirm('정말 삭제하시겠습니까?')) {
-    navigate('/books'); // 도서 목록으로 이동
+
+  const handleDelete = async () => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      try {
+        setLoading(true);
+        await api.delete(`/api/v1/books/${id}`);
+        alert('삭제 완료!');
+        navigate('/');
+      } catch (e) {
+        alert('삭제 실패: ' + (e.response?.data?.message || e.message));
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container sx={{ p: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress />
+      </Container>
+    );
   }
-};
+
+  if (error) {
+    return (
+      <Container sx={{ p: 4 }}>
+        <Alert severity="error">{error}</Alert>
+        <Button onClick={() => navigate(-1)} variant="outlined" sx={{ mt: 2 }}>
+          뒤로가기
+        </Button>
+      </Container>
+    );
+  }
+
+  if (!book) return null;
 
   return (
     <Layout>
@@ -43,7 +99,6 @@ export default function Update() {
           p: 4
         }}
       >
-        {/* Indicator */}
         <Box
           sx={{
             bgcolor: 'primary.light',
@@ -56,20 +111,8 @@ export default function Update() {
           <Typography variant="h6">📘 도서 수정</Typography>
         </Box>
 
-        <Box
-          sx={{
-            display: 'flex',
-            gap: 4,
-            flexWrap: 'wrap'
-          }}
-        >
-          {/* 표지 + 메타 정보 */}
-          <Box
-            sx={{
-              flex: '1 1 200px',
-              textAlign: 'center'
-            }}
-          >
+        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          <Box sx={{ flex: '1 1 200px', textAlign: 'center' }}>
             <Box
               sx={{
                 width: '100%',
@@ -81,10 +124,7 @@ export default function Update() {
                 borderRadius: 1
               }}
             >
-              <Typography
-                variant="subtitle1"
-                sx={{ lineHeight: 1.2, p: 1 }}
-              >
+              <Typography variant="subtitle1" sx={{ lineHeight: 1.2, p: 1 }}>
                 도서 표지
               </Typography>
             </Box>
@@ -99,7 +139,6 @@ export default function Update() {
             </Typography>
           </Box>
 
-          {/* 내용 수정 영역 */}
           <Box
             sx={{
               flex: '2 1 400px',
@@ -115,6 +154,8 @@ export default function Update() {
             <TextField
               label="내용"
               multiline
+              minRows={10}
+              maxRows={20}
               variant="outlined"
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -125,8 +166,6 @@ export default function Update() {
             />
           </Box>
 
-
-          {/* 버튼 영역 */}
           <Box
             sx={{
               flex: '0 0 180px',
@@ -137,20 +176,17 @@ export default function Update() {
               justifyContent: 'flex-start',
             }}
           >
-            <Button variant="outlined" size="large" onClick={() => navigate(-1)}>
+            <Button variant="outlined" size="large" onClick={() => navigate(-1)} disabled={loading}>
               뒤로가기
             </Button>
-            <Button variant="contained" size="large" onClick={handleSave}>
+            <Button variant="contained" size="large" onClick={handleSave} disabled={loading}>
               수정완료
             </Button>
             <Button
-              variant="contained" color="error" size="large" onClick={handleDelete}>
+              variant="contained" color="error" size="large" onClick={handleDelete} disabled={loading}>
               도서삭제
             </Button>
-
           </Box>
-
-
         </Box>
       </Box>
     </Layout>
