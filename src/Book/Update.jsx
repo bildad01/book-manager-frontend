@@ -33,17 +33,14 @@ export default function Update() {
   const handleSave = async () => {
     try {
       setLoading(true);
-      const response = await api.put(`/api/v1/books/${id}`, {
+      await api.put(`/api/v1/books/${id}`, {
         content: content,
         title: book.title,
         author: book.author,
+        coverImageUrl: book.coverImageUrl, // 기존 값 그대로 포함!
       });
-      if (response.data.status === 'success') {
-        alert('수정 완료!!');
-        navigate(`/book/details/${id}`);
-      } else {
-        alert('수정 실패: ' + response.data.message);
-      }
+      alert('수정 완료!!');
+      navigate(`/book/details/${id}`);
     } catch (e) {
       alert('서버 연결 실패: ' + (e.response?.data?.message || e.message));
     } finally {
@@ -121,12 +118,23 @@ export default function Update() {
                 bgcolor: 'grey.200',
                 mb: 2,
                 mx: 'auto',
-                borderRadius: 1
+                borderRadius: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
             >
-              <Typography variant="subtitle1" sx={{ lineHeight: 1.2, p: 1 }}>
-                도서 표지
-              </Typography>
+              {book.coverImageUrl ? (
+                <img
+                  src={book.coverImageUrl}
+                  alt="도서 표지"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <Typography variant="subtitle1" sx={{ p: 1 }}>
+                  도서 표지
+                </Typography>
+              )}
             </Box>
             <Typography variant="h6" gutterBottom noWrap>
               {book.title}
