@@ -81,13 +81,8 @@ export default function Register() {
 
       const res = await registerBook(payload);
 
-      // 등록 성공 시 바로 /book으로 이동
-      if (res.data?.status === "success") {
-        setSuccess("도서 등록 성공!");
-        navigate("/book");
-      } else {
-        setError(res.data?.message || "도서 등록 실패");
-      }
+      setSuccess("도서 등록 성공!");
+      navigate("/book");
     } catch (e) {
       setError(
         e.response?.data?.message || "도서 등록 실패"
