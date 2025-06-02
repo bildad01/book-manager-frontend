@@ -8,18 +8,25 @@
 - 메인페이지
 - 이미지나 제목을 누르면 상세페이지로 이동
 - 도서 추가 버튼을 누르면 도서 등록 페이지로 이동
+![스크린샷 2025-06-02 155648](https://github.com/user-attachments/assets/2fbb1739-5469-438a-a4bd-78a5f9b2a42e)
+
 
 ### 도서 등록 (Register.jsx)
 - /book/register
 - 도서 제목과 내용 작성
 - AI 표지 이미지 생성 버튼을 누르면 표지 이미지 생성 및 표지 확인 가능
 - 표지 이미지까지 생성 되면 등록 버튼을 눌러 도서 등록하기
+![스크린샷 2025-06-02 153733](https://github.com/user-attachments/assets/093e0d91-2741-46b0-bdfd-3d2fea2e5972)
+
 
 ### 도서 상세 (Detail.jsx)
 - /book/details/{id}
 - 수정 및 삭제 가능
 - 표지, 제목, 작가, 내용 확인 가능
+![스크린샷 2025-06-02 155659](https://github.com/user-attachments/assets/6167ab91-4be2-4313-9994-7b9850d786df)
+
 
 ### 도서 수정 (Update.jsx)
 - /book/update/{id}
 - 제목, 작가, 내용 수정 가능
+![스크린샷 2025-06-02 155729](https://github.com/user-attachments/assets/d9bf873d-faf5-46bf-9c6e-18c254c08a23)
