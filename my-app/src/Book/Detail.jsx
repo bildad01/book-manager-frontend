@@ -1,25 +1,73 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Box, Typography, Button } from '@mui/material';
+import { Container, Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
+import { fetchBookDetail } from '../api'; // 실제 경로에 맞게 import
+import { deleteBook } from '../api';
 
 export default function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // 임시 더미 데이터
-  const book = {
-    bookid:id,
-    title: `도서 제목 예시 (ID: ${id})`,
-    author: '홍길동',
-    content:
-      '이곳에 도서의 상세 내용을 표시합니다. 내용이 길 경우 Box에 overflow 설정으로 스크롤 지원.',
+  // 상태 관리
+  const [book, setBook] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  // 도서 상세 정보 불러오기
+  useEffect(() => {
+    const loadBook = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await fetchBookDetail(id);
+        setBook(res); // 바로 도서 객체
+      } catch (e) {
+        setError('도서 정보를 불러오지 못했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBook();
+  }, [id]);
+
+  // 도서 삭제 (API 연동 필요)
+  const handleDelete = async (id) => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      try {
+        await deleteBook(id); // 서버에서 삭제
+        setBooks(prev => prev.filter(book => book.id !== id)); // 상태 갱신
+        // 또는 book.bookId !== id (API 구조에 맞게)
+      } catch (e) {
+        alert(e.message || '삭제 실패');
+      }
+    }
   };
+
+  if (loading) {
+    return (
+      <Container sx={{ p: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ p: 4 }}>
+        <Alert severity="error">{error}</Alert>
+        <Button variant="outlined" onClick={() => navigate(-1)} sx={{ mt: 2 }}>뒤로가기</Button>
+      </Container>
+    );
+  }
+
+  if (!book) return null;
 
   return (
     <Container
       sx={{
+        width: '100vw',
         p: 4,
-        minHeight: '100vh',
+        minHeight: '80vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -29,7 +77,7 @@ export default function Detail() {
       {/* 중앙 정렬된 래퍼 박스 */}
       <Box
         sx={{
-          width: '100%',
+          width: '80vw',
           maxWidth: 1200,
           bgcolor: 'background.paper',
           borderRadius: 2,
@@ -126,7 +174,7 @@ export default function Detail() {
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate(`/book/update/${book.bookid}`)}
+              onClick={() => navigate(`/book/update/${id}`)}
             >
               도서수정
             </Button>
@@ -134,7 +182,7 @@ export default function Detail() {
               variant="contained"
               color="error"
               size="large"
-              onClick={() => {}}
+              onClick={() => handleDelete(book.bookId)}
             >
               도서삭제
             </Button>
@@ -144,3 +192,4 @@ export default function Detail() {
     </Container>
   );
 }
+

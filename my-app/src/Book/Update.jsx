@@ -1,47 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Box, Typography, TextField, Button } from '@mui/material';
+import { Container, Box, Typography, TextField, Button, CircularProgress, Alert } from '@mui/material';
+import { api, fetchBookDetail } from '../api'; // api와 함수 함께 임포트
 
 export default function Update() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // 임시 더미 데이터
-  const book = {
-    bookid: id,
-    title: `도서 제목 예시 (ID: ${id})`,
-    author: '홍길동',
-    content:
-      '이곳에 도서의 상세 내용을 표시합니다. 수정 가능한 텍스트 박스로 대체되었습니다.',
-  };
-
-  // content 상태 관리
+  // 상태 관리
+  const [book, setBook] = useState(null);
   const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
+  // 도서 데이터 불러오기
   useEffect(() => {
-    setContent(book.content);
-  }, [book.content]);
+    const loadBook = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await fetchBookDetail(id);
+        setBook(res);
+        setContent(res.content);
+      } catch (e) {
+        setError('도서 정보 불러오기 실패');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadBook();
+  }, [id]);
 
-  const handleSave = () => {
-    console.log('Updated content:', content);
-    navigate(`/books/details/${id}`);
+  // 수정 완료 처리 함수
+  const handleSave = async () => {
+    try {
+      // API 호출 (예: axios)
+      const response = await api.put(`/api/v1/books/${id}`, { 
+        content: content,
+        title: book.title, // 필요시 추가
+        author: book.author // 필요시 추가
+      });
+      alert('수정 완료!!');
+      navigate(`/book/details/${id}`);
+      // if (response.data.status === 'success') {
+      //   alert('수정 완료!!');
+      //   navigate(`/book/details/${id}`);
+      // } else {
+      //   alert('수정 실패: ' + response.data.message);
+      // }
+    } catch (e) {
+      alert('서버 연결 실패: ' + e.message);
+    }
   };
+
+
+  // 도서 삭제 처리
+  const handleDelete = async () => {
+    if (window.confirm('정말 삭제하시겠습니까?')) {
+      try {
+        // 실제 API 호출 코드 (예시)
+        // await api.delete(`/api/v1/books/${id}`);
+        alert('삭제 완료!');
+        navigate('/');
+      } catch (e) {
+        alert('삭제 실패');
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <Container sx={{ p: 4, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container sx={{ p: 4 }}>
+        <Alert severity="error">{error}</Alert>
+        <Button onClick={() => navigate(-1)} variant="outlined" sx={{ mt: 2 }}>
+          뒤로가기
+        </Button>
+      </Container>
+    );
+  }
+
+  if (!book) return null;
 
   return (
     <Container
       sx={{
         p: 4,
-        minHeight: '100vh',
+        width: '100vw',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         bgcolor: 'background.default'
       }}
     >
-      {/* 중앙 정렬된 래퍼 박스 */}
       <Box
         sx={{
-          width: '100%',
+          width: '80vw',
           maxWidth: 1200,
           bgcolor: 'background.paper',
           borderRadius: 2,
@@ -49,7 +110,6 @@ export default function Update() {
           p: 4
         }}
       >
-        {/* Indicator 영역 */}
         <Box
           sx={{
             bgcolor: 'primary.light',
@@ -59,10 +119,9 @@ export default function Update() {
             textAlign: 'center'
           }}
         >
-          <Typography variant="h6">Indicator</Typography>
+          <Typography variant="h6">도서 수정</Typography>
         </Box>
 
-        {/* 메인 레이아웃: 좌(메타), 중(내용), 우(버튼) */}
         <Box
           sx={{
             display: 'flex',
@@ -88,12 +147,15 @@ export default function Update() {
                 borderRadius: 1
               }}
             >
-              <Typography
-                variant="subtitle1"
-                sx={{ lineHeight: 1.2, p: 1, textAlign: 'center' }}
-              >
-                도서 표지
-              </Typography>
+              {book.coverImageUrl && book.coverImageUrl !== 'null' ? (
+                <img 
+                  src={book.coverImageUrl} 
+                  alt="도서표지" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              ) : (
+                <Typography variant="subtitle1">도서 표지 없음</Typography>
+              )}
             </Box>
             <Typography variant="h5" gutterBottom>
               제목
@@ -107,7 +169,7 @@ export default function Update() {
             </Typography>
           </Box>
 
-          {/* 중간: 내용 영역 (flex로 세로 비율 조정) */}
+          {/* 중간: 내용 영역 */}
           <Box
             sx={{
               flex: '1 1 auto',
@@ -131,7 +193,7 @@ export default function Update() {
             />
           </Box>
 
-          {/* 우측: 버튼 열 (수직 나열) */}
+          {/* 우측: 버튼 열 */}
           <Box
             sx={{
               flex: '0 0 20%',
@@ -144,10 +206,19 @@ export default function Update() {
             <Button variant="outlined" size="large" onClick={() => navigate(-1)}>
               뒤로가기
             </Button>
-            <Button variant="contained" color="error" size="large" onClick={() => {}}>
+            <Button 
+              variant="contained" 
+              color="error" 
+              size="large" 
+              onClick={handleDelete}
+            >
               도서삭제
             </Button>
-            <Button variant="contained" size="large" onClick={handleSave}>
+            <Button 
+              variant="contained" 
+              size="large" 
+              onClick={handleSave}
+            >
               수정완료
             </Button>
           </Box>

@@ -4,6 +4,7 @@ import { Box, TextField, Button, Typography, Paper, CircularProgress, Alert } fr
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import OpenAI from "openai";
+import { registerBook } from '../api';
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -71,33 +72,24 @@ export default function Register() {
       setError("제목과 내용을 입력하세요.");
       return;
     }
-    // 콘솔에 값 출력
-    console.log("등록 데이터:", {
-        title,
-        content,
-        coverImageUrl
-    });
     try {
-      // coverImageUrl이 비어 있으면 payload에서 제외
       const payload = { title, content };
       if (coverImageUrl && coverImageUrl.trim() !== "") {
         payload.coverImageUrl = coverImageUrl;
       }
-      const res = await axios.post("/api/v1/books", payload);
-      if (res.data.status === "success") {
+      const res = await registerBook(payload);
+      // 서버 응답 구조에 따라 조건문 조정
+      if (res.status === "success" || res.id) {
         setSuccess("도서 등록 성공!");
-        setTimeout(() => navigate("/books"), 1000); // 1초 후 목록으로 이동
+        setTimeout(() => navigate("/books"), 1000);
       } else {
-        setError(res.data.message || "도서 등록 실패");
+        setError(res.message || "도서 등록 실패");
       }
     } catch (e) {
-      if (e.response && e.response.data && e.response.data.message) {
-        setError(e.response.data.message);
-      } else {
-        setError("도서 등록 실패");
-      }
+      setError(e.message || "도서 등록 실패");
     }
   };
+
 
   return (
     <Box

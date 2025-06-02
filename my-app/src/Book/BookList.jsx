@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 추가
 import './BookList.css';
 import { fetchBooks as fetchBooksAPI } from '../api';
+import { deleteBook } from '../api';
 
 function BookList() {
   const [books, setBooks] = useState([]);
@@ -57,11 +58,16 @@ function BookList() {
     navigate(`/book/details/${id}`);
   };
 
-  // 삭제 함수 (임시 예시 - 실제 API 요청 필요)
-  const handleDelete = (id) => {
+  // 삭제 함수 
+  const handleDelete = async (id) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
-      setBooks(prev => prev.filter(book => book.id !== id));
-      // 실제라면 여기서 API 호출 후 상태 갱신
+      try {
+        await deleteBook(id); // 서버에서 삭제
+        setBooks(prev => prev.filter(book => book.id !== id)); // 상태 갱신
+        // 또는 book.bookId !== id (API 구조에 맞게)
+      } catch (e) {
+        alert(e.message || '삭제 실패');
+      }
     }
   };
 
@@ -75,16 +81,15 @@ function BookList() {
       <div className="book-grid">
         {books.map((book) => (
           <div className="book-card" key={book.bookId}>
-          {/* <div className="book-card" key={book.id}> */}
-            <div className="book-cover" onClick={() => handleUpdate(book.id)}>
+            <div className="book-cover" onClick={() => handleUpdate(book.bookId)}>
               <img src={book.coverImageUrl} alt="도서표지" />
             </div>
             <div className="book-info">
               <p><strong>도서이름:</strong> {book.title}</p>
               <p><strong>생성일자:</strong> {formatDate(book.createdAt)}</p>
               <div className="book-actions">
-                <button className="btn-update" onClick={() => handleUpdate(book.id)}>수정</button>
-                <button className="btn-delete" onClick={() => handleDelete(book.id)}>삭제</button>
+                <button className="btn-update" onClick={() => navigate(`/book/update/${book.bookId}`)}>수정</button>
+                <button className="btn-delete" onClick={() => handleDelete(book.bookId)}>삭제</button>
               </div>
             </div>
           </div>
