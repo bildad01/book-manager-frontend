@@ -1,12 +1,25 @@
-# React + Vite
+프론트엔드
+-----
+담당자 : 김민지, 나기현, 이승준, 정한이
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 페이지 상세 정보
+### 도서 목록 (BookList.jsx)
+- /book
+- 메인페이지
+- 이미지나 제목을 누르면 상세페이지로 이동
+- 도서 추가 버튼을 누르면 도서 등록 페이지로 이동
 
-Currently, two official plugins are available:
+### 도서 등록 (Register.jsx)
+- /book/register
+- 도서 제목과 내용 작성
+- AI 표지 이미지 생성 버튼을 누르면 표지 이미지 생성 및 표지 확인 가능
+- 표지 이미지까지 생성 되면 등록 버튼을 눌러 도서 등록하기
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 도서 상세 (Detail.jsx)
+- /book/details/{id}
+- 수정 및 삭제 가능
+- 표지, 제목, 작가, 내용 확인 가능
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 도서 수정 (Update.jsx)
+- /book/update/{id}
+- 제목, 작가, 내용 수정 가능
