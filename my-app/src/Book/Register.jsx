@@ -44,7 +44,7 @@ export default function Register() {
       // 2. DALL·E 이미지 생성 프롬프트
       const imagePrompt = `
         "${title}"라는 제목을 표지 상단에 넣고,
-        아래 요약에 어울리는 배경을 가진 260x260 사이즈의 책 표지 이미지를 만들어줘.
+        아래 요약에 어울리는 배경을 가진 책 앞표지 이미지를 만들어줘.
         요약: ${summary}
         `;
 
