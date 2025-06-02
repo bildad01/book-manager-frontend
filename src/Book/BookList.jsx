@@ -34,6 +34,10 @@ function BookList() {
     navigate(`/book/update/${id}`); // ✅ update 경로로 통일
   };
 
+  const handleDetail = (id) => {
+    navigate(`/book/details/${id}`);
+  };
+
   const handleDelete = async (id) => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
@@ -56,9 +60,9 @@ function BookList() {
         <div className="book-grid">
           {books.map((book) => (
             <div className="book-card" key={book.bookId}>
-              <div className="book-cover" onClick={() => handleUpdate(book.bookId)}>
-                {book.coverUrl && (
-                  <img src={book.coverUrl} alt="도서 표지" />
+              <div className="book-cover" onClick={() => handleDetail(book.bookId)}>
+                {book.coverImageUrl && (
+                  <img src={book.coverImageUrl} alt="도서 표지" />
                 )}
               </div>
               <div className="book-info">
@@ -71,8 +75,8 @@ function BookList() {
               </div>
             </div>
           ))}
-
         </div>
+
       </div>
     </Layout>
   );

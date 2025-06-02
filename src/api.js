@@ -12,14 +12,9 @@ export async function fetchBooks() {
 }
 
 // 도서 상세 정보
-export const fetchBookDetail = async (id) => {
-  try {
-    const response = await api.get(`/api/v1/books/${id}`);
-    return response.data.data; // ✅ 실제 book 객체만 반환
-  } catch (error) {
-    throw new Error('도서 상세 정보 조회 실패');
-  }
-};
+export function fetchBookDetail(id) {
+  return api.get(`/api/v1/books/${id}`).then(res => res.data);
+}
 
 
 // 도서 등록 함수

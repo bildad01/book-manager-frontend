@@ -80,7 +80,8 @@ export default function Register() {
       }
 
       const res = await registerBook(payload);
-
+      console.log("registerBook 응답:", res);
+      
       setSuccess("도서 등록 성공!");
       navigate("/book");
     } catch (e) {
