@@ -19,6 +19,41 @@
 | 백엔드 통신 | Spring Boot|
 | AI | OpenAI API (DALL·E) | 
 
+## 디렉토리 구조
+```
+book-manager-frontend/
+├── public/                         # 정적 파일
+│   └── index.html
+├── src/
+│   ├── assets/                     # 정적 리소스 (이미지 등)
+│   │   └── react.svg
+│   ├── Book/                       # 도서 관련 페이지 컴포넌트
+│   │   ├── BookList.css            # 도서 목록 페이지 css
+│   │   ├── BookList.jsx            # 도서 목록 페이지
+│   │   ├── Detail.jsx              # 도서 상세 페이지
+│   │   ├── List.jsx                # 도서 목록 페이지 test용
+│   │   ├── Register.jsx            # 도서 등록 페이지
+│   │   └── Update.jsx              # 도서 수정 페이지
+│   ├── components/                 # 공통 UI 컴포넌트
+│   │   └── Layout.jsx
+│   ├── services/                   # AI 관련 서비스 (API 연동 등)
+│   │   └── aiCoverService.js       # dalle 테스트
+│   ├── api.js                      # API 요청 처리
+│   ├── App.css                     # 전체 스타일
+│   ├── App.jsx                     # 메인 앱 컴포넌트
+│   ├── index.css                   # 기본 스타일
+│   ├── main.jsx                    # 앱 진입점
+│   └── router.js                   # 라우팅 설정
+├── .env                            # 환경 변수 설정
+├── .gitignore                      # Git 제외 파일 설정
+├── .gitignore_backup               # Gitignore 백업
+├── eslint.config.js                # 린트 설정
+├── index.html                      # 앱 루트 HTML
+├── package.json                    # 의존성 및 명령어 설정
+├── package-lock.json               # 의존성 lock
+├── README.md                       # 프로젝트 설명서
+```
+
 ---
  
 ## 페이지 상세 정보
