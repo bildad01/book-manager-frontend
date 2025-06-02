@@ -64,7 +64,6 @@ function BookList() {
       try {
         await deleteBook(id); // 서버에서 삭제
         setBooks(prev => prev.filter(book => book.id !== id)); // 상태 갱신
-        // 또는 book.bookId !== id (API 구조에 맞게)
       } catch (e) {
         alert(e.message || '삭제 실패');
       }

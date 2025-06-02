@@ -31,12 +31,13 @@ export default function Detail() {
   }, [id]);
 
   // 도서 삭제 (API 연동 필요)
-  const handleDelete = async (id) => {
+
+  const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        await deleteBook(id); // 서버에서 삭제
-        setBooks(prev => prev.filter(book => book.id !== id)); // 상태 갱신
-        // 또는 book.bookId !== id (API 구조에 맞게)
+        await deleteBook(id); // 여기서 id를 바로 사용!
+        alert('삭제 완료!');
+        navigate('/books'); // 또는 navigate('/') 등 목록 경로로 이동
       } catch (e) {
         alert(e.message || '삭제 실패');
       }
@@ -182,7 +183,7 @@ export default function Detail() {
               variant="contained"
               color="error"
               size="large"
-              onClick={() => handleDelete(book.bookId)}
+              onClick={handleDelete}
             >
               도서삭제
             </Button>

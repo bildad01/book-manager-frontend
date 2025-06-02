@@ -79,7 +79,7 @@ export default function Register() {
       }
       const res = await registerBook(payload);
       // 서버 응답 구조에 따라 조건문 조정
-      if (res.status === "success" || res.id) {
+      if (res.bookId) {
         setSuccess("도서 등록 성공!");
         setTimeout(() => navigate("/books"), 1000);
       } else {
