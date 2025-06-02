@@ -1,6 +1,9 @@
-프론트엔드
------
-담당자 : 김민지, 나기현, 이승준, 정한이
+# Book-manager
+### KT AIVLE School 4차 미니 프로젝트 : Spring Boot + React 기반 도서 관리 및 AI 표지 생성 시스템
+
+프론트엔드 담당자 : 김민지, 나기현, 이승준, 정한이
+
+백엔드 깃허브 : https://github.com/bildad01/book-manager-backend
 
 ## 주요 기능
 - 도서 목록 : 전체 도서 조회
