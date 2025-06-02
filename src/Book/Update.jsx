@@ -23,7 +23,7 @@ export default function Update() {
 
   const handleSave = () => {
     console.log('Updated content:', content);
-    navigate(`/books/details/${id}`);
+    navigate(`/book/details/${id}`);
   };
   const handleDelete = () => {
   if (window.confirm('정말 삭제하시겠습니까?')) {
