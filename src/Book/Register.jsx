@@ -14,14 +14,15 @@ export default function Register() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [author, setAuthor] = useState(""); // 작가(저자) 상태 추가
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
   const handleGenerateCover = async () => {
-    if (!title.trim() || !content.trim()) {
-      setError("제목과 내용을 먼저 입력하세요.");
+    if (!title.trim() || !author.trim() || !content.trim()) {
+      setError("제목과 작가, 내용을 먼저 입력하세요.");
       return;
     }
     setError("");
@@ -63,15 +64,15 @@ export default function Register() {
   const handleRegister = async () => {
     setError("");
     setSuccess("");
-    if (!title.trim() || !content.trim()) {
-      setError("제목과 내용을 입력하세요.");
+    if (!title.trim() || !author.trim() || !content.trim()) {
+      setError("제목과 작가, 내용을 입력하세요.");
       return;
     }
 
-    console.log("등록 데이터:", { title, content, coverImageUrl });
+    console.log("등록 데이터:", { title, author, content, coverImageUrl });
 
     try {
-      const payload = { title, content };
+      const payload = { title, author, content };
       if (coverImageUrl?.trim()) {
         payload.coverImageUrl = coverImageUrl;
       }
@@ -176,6 +177,16 @@ export default function Register() {
               sx={{ mb: 2 }}
             />
             <TextField
+              label="작가"
+              fullWidth
+              value={author}
+              onChange={e => setAuthor(e.target.value)}
+              inputProps={{ maxLength: 15 }}
+              helperText={`${author.length}/15`}
+              required
+              sx={{ mb: 2 }}
+            />
+            <TextField
               label="내용"
               fullWidth
               multiline
@@ -192,14 +203,14 @@ export default function Register() {
               <Button
                 variant="outlined"
                 onClick={handleGenerateCover}
-                disabled={loading || !title.trim() || !content.trim()}
+                disabled={loading || !title.trim() || !author.trim() || !content.trim()}
               >
                 {loading ? "생성 중..." : "AI 표지 이미지 생성"}
               </Button>
               <Button
                 variant="contained"
                 onClick={handleRegister}
-                disabled={!title.trim() || !content.trim()}
+                disabled={!title.trim() || !author.trim() || !content.trim()}
               >
                 등록
               </Button>
