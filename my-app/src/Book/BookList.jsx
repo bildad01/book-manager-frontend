@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // 추가
 import './BookList.css';
+import { fetchBooks as fetchBooksAPI } from '../api';
 
 function BookList() {
   const [books, setBooks] = useState([]);
@@ -10,26 +11,44 @@ function BookList() {
     fetchBooks();
   }, []);
 
+  // const fetchBooks = async () => {
+  //   const dummyResponse = {
+  //     status: 'success',
+  //     data: [
+  //       {
+  //         id: 1,
+  //         title: '도서 제목 예시',
+  //         coverImageUrl: 'https://example.com/cover.jpg',
+  //         createdAt: '2025-05-30T11:00:00'
+  //       },
+  //       {
+  //         id: 2,
+  //         title: '다른 도서 제목',
+  //         coverImageUrl: 'https://example.com/cover2.jpg',
+  //         createdAt: '2025-05-29T10:00:00'
+  //       }
+  //     ]
+  //   };
+  //   setBooks(dummyResponse.data);
+  // };
+
   const fetchBooks = async () => {
-    const dummyResponse = {
-      status: 'success',
-      data: [
-        {
-          id: 1,
-          title: '도서 제목 예시',
-          coverImageUrl: 'https://example.com/cover.jpg',
-          createdAt: '2025-05-30T11:00:00'
-        },
-        {
-          id: 2,
-          title: '다른 도서 제목',
-          coverImageUrl: 'https://example.com/cover2.jpg',
-          createdAt: '2025-05-29T10:00:00'
-        }
-      ]
-    };
-    setBooks(dummyResponse.data);
+    try {
+      const result = await fetchBooksAPI();
+      if (Array.isArray(result)) {
+        setBooks(result);
+      } else if (result.status === 'success') {
+        setBooks(result.data);
+      } else {
+        alert('도서 목록을 불러오지 못했습니다.');
+      }
+    } catch (error) {
+      alert('서버와 통신 중 오류가 발생했습니다.');
+      console.error(error);
+    }
   };
+
+
 
   const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
 
@@ -55,7 +74,8 @@ function BookList() {
 
       <div className="book-grid">
         {books.map((book) => (
-          <div className="book-card" key={book.id}>
+          <div className="book-card" key={book.bookId}>
+          {/* <div className="book-card" key={book.id}> */}
             <div className="book-cover" onClick={() => handleUpdate(book.id)}>
               <img src={book.coverImageUrl} alt="도서표지" />
             </div>

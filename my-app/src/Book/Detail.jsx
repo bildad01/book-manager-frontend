@@ -126,7 +126,7 @@ export default function Detail() {
             <Button
               variant="contained"
               size="large"
-              onClick={() => navigate(`/books/update/${book.bookid}`)}
+              onClick={() => navigate(`/book/update/${book.bookid}`)}
             >
               도서수정
             </Button>
